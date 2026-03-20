@@ -79,5 +79,5 @@ The following plots demonstrate the MPC's ability to maintain stability and stri
 
 ## Documentation & Theory 
 
-For a complete derivation of the 12-state LTI system, the Newton-Euler rigid body dynamics, and the exact mathematical formulation of the Quadratic Program solved by the MPC, please refer to the ![`Formulation.md`](Formulation.md) file in this repository.
+For a complete derivation of the 12-state LTI system, the Newton-Euler rigid body dynamics, and the exact mathematical formulation of the Quadratic Program solved by the MPC, please refer to the [`Formulation.md`](Formulation.md) file in this repository.
 

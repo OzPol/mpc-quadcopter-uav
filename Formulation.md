@@ -33,13 +33,18 @@ The true physics of the quadcopter are governed by highly coupled, nonlinear 2nd
 
 **Translational Dynamics:**  
 $$\ddot{x} = (\cos\phi\sin\theta\cos\psi + \sin\phi\sin\psi)\frac{U_1}{m}$$
+
 $$\ddot{y} = (\cos\phi\sin\theta\sin\psi - \sin\phi\cos\psi)\frac{U_1}{m}$$
+
 $$\ddot{z} = -g + (\cos\phi\cos\theta)\frac{U_1}{m}$$
 
 **Rotational Dynamics:**  
 $$\ddot{\phi} = \dot{\theta}\dot{\psi}\left(\frac{I_{yy} - I_{zz}}{I_{xx}}\right) + \frac{J_r}{I_{xx}}\dot{\theta}\Omega + \frac{U_2}{I_{xx}}$$
+
 $$\ddot{\theta} = \dot{\phi}\dot{\psi}\left(\frac{I_{zz} - I_{xx}}{I_{yy}}\right) - \frac{J_r}{I_{yy}}\dot{\phi}\Omega + \frac{U_3}{I_{yy}}$$
+
 $$\ddot{\psi} = \dot{\phi}\dot{\theta}\left(\frac{I_{xx} - I_{yy}}{I_{zz}}\right) + \frac{U_4}{I_{zz}}$$
+
 *(Note: $\Omega$ represents the residual propeller gyroscopic momentum, and $J_r$ is the rotor inertia).*
 
 ### 2.3 Nonlinear State-Space Representation
@@ -70,36 +75,44 @@ To implement linear MPC, we apply a Taylor series first-order expansion around a
 
 **Hover Assumptions:**  
 
-1.  **Small Angles:** Roll and pitch are near zero ($\phi \approx 0, \theta \approx 0, \psi \approx 0$). Therefore, $\cos(0) \approx 1$ and $\sin(\alpha) \approx \alpha$.
-2.  **Zero Velocity:** Angular velocities are near zero. Cross-coupled terms ($\dot{\theta}\dot{\psi}$) and gyroscopic rotor drag terms ($\dot{\theta}\Omega$) approach zero and are removed.
+1.  **Small Angles:** Roll and pitch are near zero ( $\phi \approx 0, \theta \approx 0, \psi \approx 0$ ). Therefore, $\cos(0) \approx 1$ and $\sin(\alpha) \approx \alpha$.
+2.  **Zero Velocity:** Angular velocities are near zero. Cross-coupled terms ( $\dot{\theta}\dot{\psi}$ ) and gyroscopic rotor drag terms ( $\dot{\theta}\Omega$ ) approach zero and are removed.
 3.  **Thrust Equivalency:** At hover, total thrust equals gravity ($U_1 = mg + \Delta F$).
 
 **Deriving the Linearized Equations:**  
 
 Applying these assumptions to the nonlinear equations yields the simplified linear dynamics:
-* **X-Axis:** 
+* **X-Axis:**  
   $$\ddot{x} = (1 \cdot \theta \cdot 1 + 0)\frac{mg}{m} \Rightarrow \ddot{x} = g\theta$$
-  *(Note: In our specific coordinate frame implementation, pitch-up yields negative X acceleration, so we define $\dot{u} = -g\theta$)*.
-* **Y-Axis:** 
+
+  (Note: In our specific coordinate frame implementation, pitch-up yields negative X acceleration, so we define $\dot{u} = -g\theta$ ).  
+
+* **Y-Axis:**   
   $$\ddot{y} = (1 \cdot 0 \cdot 0 - \phi \cdot 1)\frac{mg}{m} \Rightarrow \ddot{y} = -g\phi$$
-  *(Implemented as $\dot{v} = g\phi$ depending on left/right hand coordinate orientation)*.
-* **Z-Axis:** 
-  $$\ddot{z} = -g + (1 \cdot 1)\frac{mg + \Delta F}{m} \Rightarrow \ddot{z} = \frac{\Delta F}{m}$$
-* **Rotations:** With cross-coupling removed, 
+
+  (Implemented as $\dot{v} = g\phi$ depending on left/right hand coordinate orientation).  
+
+* **Z-Axis:**   
+
+  $$\ddot{z} = -g + (1 \cdot 1)\frac{mg + \Delta F}{m} \Rightarrow \ddot{z} = \frac{\Delta F}{m}$$  
+* **Rotations:** With cross-coupling removed,  
+
   $$\ddot{\phi} = \frac{\tau_\phi}{I_{xx}}$$
+
   $$\ddot{\theta} = \frac{\tau_\theta}{I_{yy}}$$
+
   $$\ddot{\psi} = \frac{\tau_\psi}{I_{zz}}$$
 
 **Linearization via Jacobian:**  
 
-The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point ($\mathbf{x}_{eq} = \mathbf{0}, U_{1,eq} = mg$):
+The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point $\mathbf{x}_{eq} = \mathbf{0}, U_{1,eq} = mg$ :
 
 $$A = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{x}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
 $$B = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{u}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
 
 ### 2.5 Linearized State-Space Representation
 
-By splitting the 2nd-order ODEs into twelve 1st-order equations ($\dot{x} = u$, $\dot{u} = -g\theta$, etc.), we construct the continuous-time Linear Time-Invariant (LTI) system:
+By splitting the 2nd-order ODEs into twelve 1st-order equations ( $\dot{x} = u$, $\dot{u} = -g\theta$, etc.), we construct the continuous-time Linear Time-Invariant (LTI) system:
 
 $$\dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u}$$
 $$\mathbf{y} = C\mathbf{x} + D\mathbf{u}$$
@@ -162,13 +175,15 @@ $$\min_{\mathbf{x}_{0:N}, \mathbf{u}_{0:N-1}} \sum_{k=0}^{N-1} (\mathbf{x}_{k} -
 
 **Subject to:**   
 $$\mathbf{x}_0 = \mathbf{x}_{current}$$
+
 $$\mathbf{x}_{k+1} = A_d \mathbf{x}_k + B_d \mathbf{u}_k$$
+
 $$\mathbf{u}_{min} \leq \mathbf{u}_k \leq \mathbf{u}_{max}$$
 
 **Where:**   
 * $Q$: State error penalty matrix.
-* $R$: Control effort increment penalty matrix (penalizes $\Delta\mathbf{u}_k = \mathbf{u}_k - \mathbf{u}_{k-1}$ to prevent aggressive actuator chatter).
-* $\mathbf{r}_k$: The reference state vector at step $k$.
+* $R$: Control effort increment penalty matrix ( penalizes $\Delta u_k = u_k - u_{k-1}$ to prevent aggressive actuator chatter ).
+* $r_k$: The reference state vector at step $k$.
 
 ### 3.2 Physical Actuator Constraints
 The control inputs are strictly bounded by the physical geometry and motor capabilities of the specific UAV. Using the max absolute thrust per motor ($F_{max}$), drone mass ($m$), and arm length ($L$), the limits are calculated as:
