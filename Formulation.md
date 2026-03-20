@@ -107,7 +107,7 @@ Applying these assumptions to the nonlinear equations yields the simplified line
 
 **Linearization via Jacobian:**  
 
-The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point $\mathbf{x}_{eq}=0$ , $\mathbf{({U}_{1})_{eq}}= \mathbf{mg}$
+The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point $\mathbf{x}_{eq}=0$, $(U_1)_{eq}= mg$
 
 $$A = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{x}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
 $$B = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{u}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
