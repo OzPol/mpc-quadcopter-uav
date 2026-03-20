@@ -32,6 +32,7 @@ $$\mathbf{u} = [\Delta F, \tau_\phi, \tau_\theta, \tau_\psi]^T$$
 The true physics of the quadcopter are governed by highly coupled, nonlinear 2nd-order ordinary differential equations (ODEs). Let $U_1$ be the total absolute thrust ($F_{total}$), and $U_2, U_3, U_4$ be the torques ($\tau_\phi, \tau_\theta, \tau_\psi$).
 
 **Translational Dynamics:**  
+
 $$\ddot{x} = (\cos\phi\sin\theta\cos\psi + \sin\phi\sin\psi)\frac{U_1}{m}$$
 
 $$\ddot{y} = (\cos\phi\sin\theta\sin\psi - \sin\phi\cos\psi)\frac{U_1}{m}$$
@@ -39,13 +40,14 @@ $$\ddot{y} = (\cos\phi\sin\theta\sin\psi - \sin\phi\cos\psi)\frac{U_1}{m}$$
 $$\ddot{z} = -g + (\cos\phi\cos\theta)\frac{U_1}{m}$$
 
 **Rotational Dynamics:**  
+
 $$\ddot{\phi} = \dot{\theta}\dot{\psi}\left(\frac{I_{yy} - I_{zz}}{I_{xx}}\right) + \frac{J_r}{I_{xx}}\dot{\theta}\Omega + \frac{U_2}{I_{xx}}$$
 
 $$\ddot{\theta} = \dot{\phi}\dot{\psi}\left(\frac{I_{zz} - I_{xx}}{I_{yy}}\right) - \frac{J_r}{I_{yy}}\dot{\phi}\Omega + \frac{U_3}{I_{yy}}$$
 
 $$\ddot{\psi} = \dot{\phi}\dot{\theta}\left(\frac{I_{xx} - I_{yy}}{I_{zz}}\right) + \frac{U_4}{I_{zz}}$$
 
-*(Note: $\Omega$ represents the residual propeller gyroscopic momentum, and $J_r$ is the rotor inertia).*
+(Note: $\Omega$ represents the residual propeller gyroscopic momentum, and $J_r$ is the rotor inertia).
 
 ### 2.3 Nonlinear State-Space Representation
 To transition from 2nd-order differential equations to a format suitable for control design, the system is rewritten as twelve 1st-order differential equations in the nonlinear state-space form:
@@ -105,7 +107,7 @@ Applying these assumptions to the nonlinear equations yields the simplified line
 
 **Linearization via Jacobian:**  
 
-The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point $\mathbf{x}_{eq} = \mathbf{0}, U_{1,eq} = mg$ :
+The linear system matrices $A$ and $B$ are formally derived by taking the Jacobians of $f(\mathbf{x}, \mathbf{u})$ evaluated at the hover equilibrium point $ x_{eq} = 0, U_{1,eq} = mg $ :
 
 $$A = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{x}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
 $$B = \left. \frac{\partial f(\mathbf{x}, \mathbf{u})}{\partial \mathbf{u}} \right|_{\mathbf{x}_{eq}, \mathbf{u}_{eq}}$$
@@ -174,6 +176,7 @@ At each time step, the controller minimizes a cost function $J$, subject to the 
 $$\min_{\mathbf{x}_{0:N}, \mathbf{u}_{0:N-1}} \sum_{k=0}^{N-1} (\mathbf{x}_{k} - \mathbf{r}_{k})^T Q (\mathbf{x}_{k} - \mathbf{r}_{k}) + \Delta\mathbf{u}_{k}^T R \Delta\mathbf{u}_{k}$$
 
 **Subject to:**   
+
 $$\mathbf{x}_0 = \mathbf{x}_{current}$$
 
 $$\mathbf{x}_{k+1} = A_d \mathbf{x}_k + B_d \mathbf{u}_k$$
