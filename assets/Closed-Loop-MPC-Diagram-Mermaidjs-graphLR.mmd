@@ -1,0 +1,6 @@
+graph LR
+    R[Reference Trajectory r_k] -->|+ e| Sum
+    Sum --> Optimizer[MPC QP Solver]
+    Optimizer -->|Torques u_k| Plant[Quadcopter Dynamics]
+    Plant -->|States x_k| Obs
+    Obs[Full State Feedback] -->|-| Sum
