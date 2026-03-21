@@ -161,7 +161,7 @@ $$B = \begin{bmatrix}
 The MPC calculates the optimal control sequence by solving a Quadratic Program (QP) over a finite prediction horizon $N$. 
 
 ```mermaid
-graph LR
+graph TD
     R[Reference Trajectory r_k] -->|+ e| Sum
     Sum --> Optimizer[MPC QP Solver]
     Optimizer -->|Torques u_k| Plant[Quadcopter Dynamics]
